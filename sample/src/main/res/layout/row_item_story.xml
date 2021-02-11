@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="image"
+            type="Integer" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/storyContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/storyImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            bind:layout_constraintBottom_toBottomOf="parent"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toTopOf="parent"
+            bind:resId="@{image}" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/story_black_scrim" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

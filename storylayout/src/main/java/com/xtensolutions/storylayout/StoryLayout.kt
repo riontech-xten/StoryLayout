@@ -3,7 +3,9 @@ package com.xtensolutions.storylayout
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -12,7 +14,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.viewpager.widget.PagerAdapter
 import com.xtensolutions.storylayout.extensions.filterColor
 import com.xtensolutions.storylayout.extensions.match
-import com.xtensolutions.storylayout.listener.StoryActionListener
+import com.xtensolutions.storylayout.listener.OnStoryChangeListener
 import com.xtensolutions.storylayout.pager.StoryPager
 import com.xtensolutions.storylayout.timer.StoryTimer
 
@@ -28,7 +30,7 @@ import com.xtensolutions.storylayout.timer.StoryTimer
  * view of StoryLayout class.
  */
 
-class StoryLayout : ConstraintLayout, StoryActionListener, StoryTimer.OnTimerUpdateListener {
+class StoryLayout : ConstraintLayout, OnStoryChangeListener, StoryTimer.OnTimerUpdateListener {
 
     private var matchParent = LayoutParams.MATCH_PARENT
     private var wrapContent = LayoutParams.WRAP_CONTENT
@@ -40,11 +42,14 @@ class StoryLayout : ConstraintLayout, StoryActionListener, StoryTimer.OnTimerUpd
     private val set = ConstraintSet()
 
     // default attrs
-    var delayTime = 5000L
+    var delayTime = 3000L
     var prgIndColor = Color.WHITE
     var prgIndSpace = 4f
     var prgIndHorizontalPadding = 8f
     var prgIndVerticalPadding = 4f
+    var prgAllowCircular = false
+
+    lateinit var storyChangeListener: OnStoryChangeListener
 
     constructor(context: Context?) : super(context!!)
     constructor(context: Context?, attr: AttributeSet?) : super(context!!, attr) {
@@ -69,9 +74,8 @@ class StoryLayout : ConstraintLayout, StoryActionListener, StoryTimer.OnTimerUpd
 
     init {
         set.clone(this)
-        setupStoryPager()
-        setupProgressContainer()
-        storyTimer = StoryTimer(delayTime, this)
+        storyTimer = StoryTimer(delayTime)
+        storyTimer.timerUpdateListener = this
     }
 
     private fun initAttributes(attrs: AttributeSet) {
@@ -82,24 +86,33 @@ class StoryLayout : ConstraintLayout, StoryActionListener, StoryTimer.OnTimerUpd
         ).toLong()
 
         prgIndColor = attr.getColor(
-            R.styleable.StoryLayout_progressIndicatorColor,
+            R.styleable.StoryLayout_prgIndColor,
             prgIndColor
         )
 
         prgIndSpace = attr.getDimension(
-            R.styleable.StoryLayout_progressIndicatorSpace,
+            R.styleable.StoryLayout_prgIndSpace,
             prgIndSpace
         )
 
         prgIndHorizontalPadding = attr.getDimension(
-            R.styleable.StoryLayout_progressIndicatorHorizontalPadding,
+            R.styleable.StoryLayout_indHorizontalPadding,
             prgIndHorizontalPadding
         )
 
         prgIndVerticalPadding = attr.getDimension(
-            R.styleable.StoryLayout_progressIndicatorVerticalPadding,
+            R.styleable.StoryLayout_indVerticalPadding,
             prgIndVerticalPadding
         )
+
+        prgAllowCircular = attr.getBoolean(
+            R.styleable.StoryLayout_prgAllowCircular,
+            prgAllowCircular
+        )
+
+        attr.recycle()
+        setupStoryPager()
+        setupProgressContainer()
     }
 
     /**
@@ -121,13 +134,15 @@ class StoryLayout : ConstraintLayout, StoryActionListener, StoryTimer.OnTimerUpd
     private fun setupProgressContainer() {
         val params = getDefaultParams(matchParent, wrapContent)
         LinearLayout(context).apply {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 elevation = 8f
             }
             orientation = LinearLayout.HORIZONTAL
+            params.setMargins(0, prgIndVerticalPadding.toInt(), 0, 0)
             layoutParams = params
         }.let {
             progressContainer = it
+
             progressContainer.setPadding(
                 prgIndHorizontalPadding.toInt(),
                 prgIndVerticalPadding.toInt(),
@@ -135,8 +150,10 @@ class StoryLayout : ConstraintLayout, StoryActionListener, StoryTimer.OnTimerUpd
                 prgIndVerticalPadding.toInt()
             )
             addView(progressContainer)
-            set.match(progressContainer, this)
+            set.match(progressContainer, this@StoryLayout)
+
         }
+        invalidate()
     }
 
     /**
@@ -175,16 +192,16 @@ class StoryLayout : ConstraintLayout, StoryActionListener, StoryTimer.OnTimerUpd
                 0, context.convertDpToPx(2f).toInt(),
                 1.0f
             ).apply {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     marginEnd = getSpace(index)
                 } else {
                     setMargins(0, 0, getSpace(index), 0)
                 }
             }
 
-            val withAlpha = ColorUtils.setAlphaComponent(prgIndColor, 200)
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                progressTintList = ColorStateList.valueOf(prgIndColor);
+            val withAlpha = ColorUtils.setAlphaComponent(prgIndColor, 120)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                progressTintList = ColorStateList.valueOf(prgIndColor)
                 indeterminateTintList = ColorStateList.valueOf(withAlpha)
             } else {
                 progressDrawable.filterColor(prgIndColor)
@@ -199,30 +216,60 @@ class StoryLayout : ConstraintLayout, StoryActionListener, StoryTimer.OnTimerUpd
     /**
      * call when user tap for next story
      */
-    override fun onNext() {
-        storyPager.currentItem = storyPager.currentItem + 1
-        storyTimer.reset()
+    override fun onNext(position: Int) {
+        if (progressIndicators.size > 0 && position < progressIndicators.size) {
+            progressIndicators[position - 1].progress = 100
+            storyTimer.restart()
+            if (::storyChangeListener.isInitialized)
+                storyChangeListener.onNext(position)
+        }
     }
 
     /**
      * call when user tap for previous story
      */
-    override fun onPrevious() {
-        storyPager.currentItem = if (storyPager.currentItem > 0) storyPager.currentItem - 1 else 0
+    override fun onPrevious(position: Int) {
+        if (progressIndicators.size > 0) {
+            progressIndicators[position].progress = 0
+            progressIndicators[position + 1].progress = 0
+            storyTimer.restart()
+            if (::storyChangeListener.isInitialized)
+                storyChangeListener.onPrevious(position)
+        }
     }
 
     /**
      * call when user hold the story view
      */
-    override fun onHold() {
+    override fun onHold(position: Int) {
         storyTimer.pause()
+        if (::storyChangeListener.isInitialized)
+            storyChangeListener.onHold(position)
     }
 
     /**
      * call to release view after view hold by user tap
      */
-    override fun onRelease() {
-        storyTimer.start()
+    override fun onRelease(position: Int) {
+        storyTimer.resume()
+        if (::storyChangeListener.isInitialized)
+            storyChangeListener.onRelease(position)
+    }
+
+    override fun onRestartStory(position: Int) {
+        Log.d("StoryLayout", "onRestartStory")
+        storyTimer.stop()
+        if (prgAllowCircular) {
+            progressIndicators.forEach {
+                it.progress = 0
+            }
+
+            storyPager.currentItem = position
+            storyTimer.restart()
+        }
+
+        if (::storyChangeListener.isInitialized)
+            storyChangeListener.onRestartStory(position)
     }
 
     /**
@@ -230,11 +277,14 @@ class StoryLayout : ConstraintLayout, StoryActionListener, StoryTimer.OnTimerUpd
      * and target for next story or finish the story
      */
     override fun onCompleted() {
-        progressIndicators.get(storyPager.currentItem).progress = 100
+        Log.d("StoryLayout", "onCompleted")
+        progressIndicators[storyPager.currentItem].progress = 100
         if (storyPager.currentItem < adapter!!.count - 1) {
-            onNext()
+            storyPager.currentItem += 1
+            onNext(storyPager.currentItem)
         } else {
             storyTimer.stop()
+            onRestartStory(0)
         }
     }
 
@@ -243,6 +293,18 @@ class StoryLayout : ConstraintLayout, StoryActionListener, StoryTimer.OnTimerUpd
      */
     override fun onUpdate(interval: Long) {
         val progress = 100 - ((interval * 100) / delayTime)
-        progressIndicators.get(storyPager.currentItem).progress = progress.toInt()
+        progressIndicators[storyPager.currentItem].progress = progress.toInt()
     }
+
+    fun hold() {
+        if (adapter != null && adapter!!.count > 0)
+            onHold(storyPager.currentItem)
+    }
+
+    fun release() {
+        if (adapter != null && adapter!!.count > 0)
+            onRelease(storyPager.currentItem)
+    }
+
+    fun stop() = storyTimer.stop()
 }

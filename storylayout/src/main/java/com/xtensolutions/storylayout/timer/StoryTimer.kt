@@ -1,6 +1,11 @@
 package com.xtensolutions.storylayout.timer
 
 import android.os.CountDownTimer
+import android.util.Log
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.ticker
+import kotlinx.coroutines.flow.*
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -8,15 +13,11 @@ import android.os.CountDownTimer
  * vaghela.mithun@gmail.com
  */
 class StoryTimer(private val delayTime: Long) {
-    private lateinit var timer: CountDownTimer
-    private var isRunning: Boolean = false;
     private var isStopped: Boolean = false
-    private var timeLeftInMiliseconds = delayTime
-    private lateinit var timerUpdateListener: OnTimerUpdateListener
+    private var isPause: Boolean = false
 
-    constructor(delayTime: Long, timerUpdateListener: OnTimerUpdateListener) : this(delayTime) {
-        this.timerUpdateListener = timerUpdateListener
-    }
+    private var timeLeftInMiliseconds = delayTime
+    lateinit var timerUpdateListener: OnTimerUpdateListener
 
     interface OnTimerUpdateListener {
         fun onCompleted()
@@ -25,61 +26,50 @@ class StoryTimer(private val delayTime: Long) {
 
     fun start() {
         if (!isStopped) {
-            timer = object : CountDownTimer(timeLeftInMiliseconds, 10) {
+            object : CountDownTimer(timeLeftInMiliseconds, 5) {
                 override fun onFinish() {
-                    timerUpdateListener.onCompleted()
+                    if (isStopped || isPause) {
+                        cancel()
+                    } else {
+                        timerUpdateListener.onCompleted()
+                    }
                 }
 
                 override fun onTick(interval: Long) {
-                    timeLeftInMiliseconds = interval
-                    timerUpdateListener.onUpdate(interval)
+                    if (isStopped || isPause) {
+                        cancel()
+                    } else {
+                        Log.d("StoryTimer", "onTick")
+                        timeLeftInMiliseconds = interval
+                        timerUpdateListener.onUpdate(interval)
+                    }
                 }
             }.start()
-
-            isRunning = true
         }
-    }
-
-    fun reset() {
-        timeLeftInMiliseconds = delayTime
-        start()
     }
 
     fun pause() {
-        if (isRunning) {
-            timer.cancel()
-            isRunning = false
-        }
+        Log.d("StoryTimer", "pause")
+        isPause = true
+    }
+
+    fun resume() {
+        Log.d("StoryTimer", "resume")
+        isPause = false
+        start()
     }
 
     fun stop() {
-        pause()
+        Log.d("StoryTimer", "stop")
         isStopped = true
+        pause()
     }
 
-//    private fun startCounter() {
-//        val f = CoroutineScope(Job() + Dispatchers.Main).launch {
-//            flowInterval(1000, 100)
-//                .flowOn(Dispatchers.IO)
-//                .onEach { println("on each::$it") }
-//                .collect {
-//                    println("collected::${TimeUnit.MILLISECONDS.toSeconds(it)}")
-//                }
-//        }
-//
-//        f.cancel()
-//    }
-//
-//    fun flowInterval(delayMillis: Long, initialDelayMillis: Long = 0L) = flow {
-//        require(delayMillis > 0) { "delayMillis must be positive" }
-//        require(initialDelayMillis >= 0) { "initialDelayMillis cannot be negative" }
-//        if (initialDelayMillis > 0) {
-//            delay(initialDelayMillis)
-//        }
-////        emit(System.currentTimeMillis())
-//        while (true) {
-//            delay(delayMillis)
-//            emit(System.currentTimeMillis())
-//        }
-//    }.cancellable().buffer()
+    fun restart() {
+        Log.d("StoryTimer", "start")
+        isPause = false
+        isStopped = false
+        timeLeftInMiliseconds = delayTime
+        start()
+    }
 }

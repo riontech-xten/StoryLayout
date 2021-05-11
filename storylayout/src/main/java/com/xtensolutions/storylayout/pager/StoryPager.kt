@@ -2,11 +2,10 @@ package com.xtensolutions.storylayout.pager
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import androidx.viewpager.widget.ViewPager
-import com.xtensolutions.storylayout.listener.StoryActionListener
 import com.xtensolutions.storylayout.getScreenWidth
+import com.xtensolutions.storylayout.listener.OnStoryChangeListener
 
 
 /**
@@ -14,13 +13,14 @@ import com.xtensolutions.storylayout.getScreenWidth
  * vaghela.mithun@gmail.com
  */
 class StoryPager : ViewPager {
-    private val TAG: String = StoryPager::class.java.name
-    private lateinit var storyActionListener: StoryActionListener
+    //    private val TAG: String = "StoryPager"
+    private var storyChangeListener: OnStoryChangeListener? = null
     private var startTime: Long = 0L
+    private var isRestarted = false
 
-    constructor(context: Context?, storyActionListener: StoryActionListener) :
+    constructor(context: Context?, storyChangeListener: OnStoryChangeListener) :
             super(context!!) {
-        this.storyActionListener = storyActionListener
+        this.storyChangeListener = storyChangeListener
     }
 
     constructor(context: Context?, attr: AttributeSet?) : super(context!!, attr)
@@ -35,27 +35,26 @@ class StoryPager : ViewPager {
     }
 
     private fun handleTouchEvent(event: MotionEvent?): Boolean {
-        when (event!!.action) {
-            MotionEvent.ACTION_DOWN -> {
-                Log.d(TAG, "ACTION_DOWN: ")
-                startTime = System.currentTimeMillis()
-                storyActionListener.onHold()
-                return true
-            }
-            MotionEvent.ACTION_UP -> {
-                Log.d(TAG, "ACTION_UP: ")
-                if (System.currentTimeMillis() - startTime > 2000) {
-                    storyActionListener.onRelease()
-                } else {
-                    onSingleTap(event.x)
+        if (storyChangeListener != null) {
+            when (event!!.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    startTime = System.currentTimeMillis()
+                    storyChangeListener!!.onHold(currentItem)
+                    return true
                 }
-                startTime = 0
-                return true
-            }
-            MotionEvent.ACTION_BUTTON_RELEASE -> {
-                Log.d(TAG, "ACTION_BUTTON_RELEASE: ")
-                storyActionListener.onRelease()
-                return true
+                MotionEvent.ACTION_UP -> {
+                    if (System.currentTimeMillis() - startTime > 2000) {
+                        storyChangeListener!!.onRelease(currentItem)
+                    } else {
+                        onSingleTap(event.x)
+                    }
+                    startTime = 0
+                    return true
+                }
+                MotionEvent.ACTION_BUTTON_RELEASE -> {
+                    storyChangeListener!!.onRelease(currentItem)
+                    return true
+                }
             }
         }
 
@@ -63,11 +62,22 @@ class StoryPager : ViewPager {
     }
 
     private fun onSingleTap(x: Float) {
-        Log.d(TAG, "onSingleTapClicked: ")
-        if (x < context.getScreenWidth() / 2) {
-            storyActionListener.onPrevious()
-        } else {
-            storyActionListener.onNext()
+        if (storyChangeListener != null) {
+            if (x < context.getScreenWidth() / 2) {
+                currentItem = if (currentItem > 0) currentItem - 1 else 0
+                storyChangeListener!!.onPrevious(currentItem)
+            } else {
+                if (adapter != null) {
+                    if (currentItem < adapter!!.count - 1) {
+                        currentItem += 1
+                        isRestarted = false
+                        storyChangeListener!!.onNext(currentItem)
+                    } else if (!isRestarted) {
+                        isRestarted = true
+                        storyChangeListener!!.onRestartStory(0)
+                    }
+                }
+            }
         }
     }
 }

@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">sample</string>
+    <string name="app_name">StoryLayoutDemo</string>
+    <string name="fav">Fav</string>
+    <string name="share">Share</string>
+    <string name="purchased">Purchased</string>
+    <string name="grab">Grab</string>
+    <string name="no_record_found">No record found</string>
+    <string name="restaurants">Restaurants</string>
+    <string name="no_deal_available">No deal available</string>
 </resources>

@@ -11,4 +11,8 @@ interface OnStoryChangeListener {
     fun onHold(position: Int)
     fun onRelease(position: Int)
     fun onRestartStory(position: Int)
+    fun onSwipeRightToLeft(position: Int) {}
+    fun onSwipeLeftToRight(position: Int) {}
+    fun onSwipeDown(position: Int) {}
+    fun onSwipeUp(position: Int) {}
 }

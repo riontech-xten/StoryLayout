@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:story="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.xtensolutions.sample.utils.StoryType" />
+
+        <variable
+            name="deal"
+            type="com.xtensolutions.sample.room.model.DealStory" />
+
+        <variable
+            name="restaurant"
+            type="com.xtensolutions.sample.room.model.Restaurant" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.xtensolutions.storylayout.StoryLayout
+            android:id="@+id/storyLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            story:delayTime="15000"
+            story:indHorizontalPadding="@dimen/screen_padding"
+            story:indVerticalPadding="@dimen/view_margin"
+            story:prgIndColor="@color/white"
+            story:prgIndSpace="@dimen/std_4dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/dealDataView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bottom_scrim"
+                    android:visibility="visible" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/screen_padding">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGrabDeal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/grab"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txtDealName"
+                        style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/screen_padding"
+                        android:layout_marginBottom="@dimen/view_margin"
+                        android:shadowColor="#4D000000"
+                        android:shadowDx="0"
+                        android:shadowDy="2"
+                        android:shadowRadius="10"
+                        android:text="@{deal.name}"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toTopOf="@id/txtDealCaption"
+                        app:layout_constraintEnd_toStartOf="@id/clPurchased"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="Speedy Lunch Special" />
+
+
+                    <TextView
+                        android:id="@+id/txtDealPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/view_margin"
+                        android:text="@{deal.price}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toTopOf="@id/txtDealName"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="$36" />
+
+                    <TextView
+                        android:id="@+id/txtDealCaption"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/screen_padding"
+                        android:layout_marginBottom="@dimen/screen_padding"
+                        android:lineSpacingExtra="@dimen/view_margin"
+                        android:shadowColor="#4D000000"
+                        android:shadowDx="0"
+                        android:shadowDy="2"
+                        android:shadowRadius="10"
+                        android:text="@{deal.description}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toTopOf="@id/clRestaurantDetails"
+                        app:layout_constraintEnd_toStartOf="@id/clPurchased"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="Buy a Sandwich and Get  a Bottomless Bowl of Soup !a Bottomless Bowl of Soup!" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/clRestaurantDetails"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/view_margin"
+                        app:layout_constraintBottom_toBottomOf="@id/btnGrabDeal"
+                        app:layout_constraintEnd_toStartOf="@id/btnGrabDeal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/btnGrabDeal">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/dealerIcon"
+                            android:layout_width="@dimen/small_profile_size"
+                            android:layout_height="@dimen/small_profile_size"
+                            android:loadImageFromUrl="@{restaurant.image}"
+                            android:scaleType="centerCrop"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerRound" />
+
+                        <TextView
+                            android:id="@+id/txtDealerName"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/view_margin"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="@{restaurant.name}"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                            android:textColor="@color/white"
+                            app:layout_constraintBottom_toTopOf="@id/txtDealerAddress"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/dealerIcon"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="Rocket restaurnat" />
+
+                        <TextView
+                            android:id="@+id/txtDealerAddress"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/view_margin"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="@{restaurant.address}"
+                            android:textColor="@color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/dealerIcon"
+                            app:layout_constraintTop_toBottomOf="@id/txtDealerName"
+                            tools:text="Dummy address" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/clPurchased"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/screen_padding"
+                        app:layout_constraintBottom_toTopOf="@id/btnGrabDeal"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <TextView
+                            android:id="@+id/txtPurchasedCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{String.valueOf(deal.purchased)+`/`+String.valueOf(deal.total)}"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+                            android:textColor="@color/white"
+                            app:layout_constraintBottom_toTopOf="@id/txtPurchased"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="5/10" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txtPurchased"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/purchased"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/fabShareDeal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/screen_padding"
+                        android:drawableTop="@drawable/ic_new_share"
+                        android:drawablePadding="@dimen/std_4dp"
+                        android:gravity="center"
+                        android:text="@string/share"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/clPurchased"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/fabFavouriteDeal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/screen_padding"
+                        android:drawableTop="@drawable/like_selector"
+                        android:drawablePadding="@dimen/std_4dp"
+                        android:gravity="center"
+                        android:text="@{String.valueOf(deal.likes)}"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/fabShareDeal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:text="100" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:layout_marginTop="@dimen/screen_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:navigationIcon="@drawable/ic_arrow_back"
+                app:navigationIconTint="@color/white" />
+        </com.xtensolutions.storylayout.StoryLayout>
+
+        <include
+            android:id="@+id/noDealFound"
+            layout="@layout/view_no_record"
+            android:visibility="gone" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

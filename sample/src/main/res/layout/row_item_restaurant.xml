@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="restaurant"
+            type="com.xtensolutions.sample.room.model.Restaurant" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/clRowRestaurantRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/action_icon_ripple"
+        android:paddingHorizontal="@dimen/screen_padding"
+        android:paddingVertical="@dimen/view_margin">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/sivRestaurant"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:loadImageFromUrl="@{restaurant.image}"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="3:2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerRound"
+            app:srcCompat="@drawable/static_image" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvRestaurantName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/screen_padding"
+            android:text="@{restaurant.name}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            app:layout_constraintStart_toEndOf="@id/sivRestaurant"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/restaurants" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvRestaurantAddress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/screen_padding"
+            android:layout_marginTop="@dimen/std_4dp"
+            android:text="@{restaurant.address}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            app:layout_constraintStart_toEndOf="@id/sivRestaurant"
+            app:layout_constraintTop_toBottomOf="@id/tvRestaurantName"
+            app:layout_constraintWidth_percent="0.6"
+            tools:text="Godhaniya Collage Road, Madhav Arcade 1st Floor Porbandar, Porbandar Locality, Porbandar, Gujarat" />
+
+        <androidx.appcompat.widget.AppCompatRatingBar
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/screen_padding"
+            android:layout_marginTop="@dimen/view_margin"
+            android:rating="@{restaurant.rating}"
+            app:layout_constraintStart_toEndOf="@id/sivRestaurant"
+            app:layout_constraintTop_toBottomOf="@id/tvRestaurantAddress" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_right_navigation"
+            tools:ignore="RtlSymmetry" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

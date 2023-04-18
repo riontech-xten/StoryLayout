@@ -7,6 +7,15 @@
         <variable
             name="image"
             type="Integer" />
+
+        <import type="com.xtensolutions.sample.utils.StoryType" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="deal"
+            type="com.xtensolutions.sample.room.model.DealStory" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,21 +23,51 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/storyImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
+            android:visibility="@{deal.storyType == StoryType.IMAGE.value ? View.VISIBLE: View.GONE}"
+            bind:layout_constraintBottom_toBottomOf="parent"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+            android:id="@+id/aspectRationFrame"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="@{deal.storyType == StoryType.VIDEO.value ? View.VISIBLE: View.GONE}"
             bind:layout_constraintBottom_toBottomOf="parent"
             bind:layout_constraintEnd_toEndOf="parent"
             bind:layout_constraintStart_toStartOf="parent"
             bind:layout_constraintTop_toTopOf="parent"
-            bind:resId="@{image}" />
+            bind:resize_mode="zoom">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/story_black_scrim" />
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/videoPlayerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                bind:auto_show="false"
+                bind:keep_content_on_player_reset="true"
+                bind:resize_mode="zoom"
+                bind:show_buffering="never"
+                bind:surface_type="surface_view"
+                bind:use_artwork="false"
+                bind:use_controller="false" />
+        </com.google.android.exoplayer2.ui.AspectRatioFrameLayout>
+
+        <ProgressBar
+            android:id="@+id/storyProgress"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            bind:layout_constraintBottom_toBottomOf="parent"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

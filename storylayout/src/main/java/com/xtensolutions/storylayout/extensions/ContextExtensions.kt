@@ -1,4 +1,4 @@
-package com.xtensolutions.storylayout
+package com.xtensolutions.storylayout.extensions
 
 import android.content.Context
 import android.util.TypedValue
@@ -21,3 +21,4 @@ fun Context.convertDpToPx(dp: Float): Float {
         this.resources.displayMetrics
     )
 }
+

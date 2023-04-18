@@ -12,6 +12,7 @@ import android.os.Build
  * vaghela.mithun@gmail.com
  */
 
+@Suppress("DEPRECATION")
 fun Drawable.filterColor(color: Int) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         colorFilter = BlendModeColorFilter(color, BlendMode.SRC_ATOP)

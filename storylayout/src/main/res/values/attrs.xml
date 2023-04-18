@@ -8,5 +8,10 @@
         <attr name="indVerticalPadding" format="dimension" />
         <attr name="prgBottomAnchorId" format="integer" />
         <attr name="prgAllowCircular" format="boolean" />
+        <attr name="prgAutoStart" format="boolean" />
+        <attr name="prgAlignment" format="enum">
+            <enum name="Bottom" value="0" />
+            <enum name="Top" value="1" />
+        </attr>
     </declare-styleable>
 </resources>

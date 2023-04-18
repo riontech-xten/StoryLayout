@@ -9,7 +9,7 @@ with help [ContDownTimer](https://developer.android.com/reference/android/os/Cou
 `StoryLayout` easy to use in your Android app. You can simply declare in your view and set your custom pager adapter with your app suitable 
 UI design. 
 
-<img src="https://github.com/riontech-xten/StoryLayout/blob/main/ezgif.com-optimize.gif" width="250"/>
+<img src="https://github.com/riontech-xten/StoryLayout/blob/main/ezgif.com-resize.gif" width="250"/>
 
 ## Usage
 

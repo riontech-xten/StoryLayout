@@ -3,9 +3,9 @@
 We can see that images story and video story become craze and common use case in the daily used application,
 like WhatsApp status, YouTube shorts, Instagram story etc. With inspiration of them, [StoryLayout] designed. 
 
-`StoryLayout` is a child class of ![ConstraintLayout](https://developer.android.com/reference/androidx/constraintlayout/widget/ConstraintLayout),
-with help ![ContDownTimer](https://developer.android.com/reference/android/os/CountDownTimer) and 
-![ViewPager2](https://developer.android.com/jetpack/androidx/releases/viewpager2) achieved this common use case for the future apps.
+`StoryLayout` is a child class of [ConstraintLayout](https://developer.android.com/reference/androidx/constraintlayout/widget/ConstraintLayout),
+with help [ContDownTimer](https://developer.android.com/reference/android/os/CountDownTimer) and 
+[ViewPager2](https://developer.android.com/jetpack/androidx/releases/viewpager2) achieved this common use case for the future apps.
 `StoryLayout` easy to use in your Android app. You can simply declare in your view and set your custom pager adapter with your app suitable 
 UI design. 
 
@@ -102,10 +102,10 @@ StoryPagerAdapter storyPagerAdapter = StoryPagerAdapter(childFragmentManager, li
 binding.storyLayout.adapter = storyPagerAdapter
 ```
 
-[StoryLayout] adapter is a instance of ![Recycler.Adapter](https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter) and with the use of
-![ViewPager2](https://developer.android.com/jetpack/androidx/releases/viewpager2) we can set the horizontal pager with help of ![FragmentStateAdapter](https://developer.android.com/reference/kotlin/androidx/viewpager2/adapter/FragmentStateAdapter)
-or vertical pager with help of ![Recycler.Adapter](https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter), here we have use the
-![FragmentStateAdapter](https://developer.android.com/reference/kotlin/androidx/viewpager2/adapter/FragmentStateAdapter) which is a child class of ![Recycler.Adapter](https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter). 
+[StoryLayout] adapter is a instance of [Recycler.Adapter](https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter) and with the use of
+[ViewPager2](https://developer.android.com/jetpack/androidx/releases/viewpager2) we can set the horizontal pager with help of [FragmentStateAdapter](https://developer.android.com/reference/kotlin/androidx/viewpager2/adapter/FragmentStateAdapter)
+or vertical pager with help of [Recycler.Adapter](https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter), here we have use the
+[FragmentStateAdapter](https://developer.android.com/reference/kotlin/androidx/viewpager2/adapter/FragmentStateAdapter) which is a child class of [Recycler.Adapter](https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.Adapter). 
 
 
 ### Implement OnStoryChangeListener

@@ -46,13 +46,13 @@ dependencies {
 
 ### Customize the progress and story play time 
 
-```maxDuration``` - Maximum story playing time. 
-```indHorizontalPadding``` - Progress indicator horizontal padding.
-```indVerticalPadding``` - Progress indicator vertical padding.
-```prgIndColor``` - Progress indicator color.
-```prgIndSpace``` - Progress indicator between space.
-```prgAllowCircular``` - To allow repeat all story
-```prgAlignment``` - Set the progress position top/bottom
+* ```maxDuration``` - Maximum story playing time. 
+* ```indHorizontalPadding``` - Progress indicator horizontal padding.
+* ```indVerticalPadding``` - Progress indicator vertical padding.
+* ```prgIndColor``` - Progress indicator color.
+* ```prgIndSpace``` - Progress indicator between space.
+* ```prgAllowCircular``` - To allow repeat all story
+* ```prgAlignment``` - Set the progress position top/bottom
 
 You can also set all attributes programmatically
 
